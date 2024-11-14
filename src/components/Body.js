@@ -2,11 +2,15 @@ import RestaurentCard from "./RestaurentCard";
 import { useEffect, useState } from "react";
 // import { SWIGGY_API } from "../utils/constants";
 import Shimmer from "./Shimmer";
+import { Link } from "react-router-dom";
+import useOnlineStatus from "../utils/useOnlineStatus";
 const Body = ()=>{
 
     const [listOfRestaurents,setListOfRestaurents]= useState([]);
     const [filteredRestaurents,setFilteredRestaurents]= useState([]);
     const [searchText,setSearchText] =useState("");
+
+    const onlineStatus = useOnlineStatus();
     console.log("Body render")
     useEffect(()=>{
         console.log("useEffect")
@@ -23,6 +27,7 @@ const Body = ()=>{
         setFilteredRestaurents(json?.data?.cards[1]?.card?.card?.gridElements?.infoWithStyle?.restaurants);
     }
 
+    if(onlineStatus===false) return <div><h1>Looks like You are offline !!!!!</h1></div>
     return listOfRestaurents.length===0?<Shimmer />:(
         <div className="body">
             <div className="filter">
@@ -46,7 +51,7 @@ const Body = ()=>{
             <div className="res-container">
                 {
                     filteredRestaurents.map((restaurent)=>
-                        <RestaurentCard resData={restaurent} key={restaurent.info.id}/>
+                       <Link key={restaurent.info.id} to={"/restaurent/"+restaurent.info.id}> <RestaurentCard resData={restaurent} /></Link>
                     )
                 }              
                 
